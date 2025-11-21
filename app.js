@@ -10,6 +10,8 @@ import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
 import * as Asset from 'expo-asset';
 import styles from './styles';
+import { MaterialIcons } from '@expo/vector-icons';
+
 
 // Import and const Drawer for react native navigation scenario
 // Todo: Review different navigation implementation choices
@@ -143,7 +145,15 @@ Once the pages are linked in the navbar, delete this block of cade.
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
+      <Drawer.Navigator 
+        initialRouteName="Home"
+        drawerPosition="right"
+        screenOptions={{
+          drawerIcon: ({ color, size}) => (
+            <MaterialIcons name='menu' color='gray' size={30} />
+          )
+        }}
+      >
         <Drawer.Screen
           name="Home"
           component={PageScreen}
