@@ -24,7 +24,7 @@ if (Platform.OS === 'web') {
 
   const script = document.createElement('script');
   script.src =
-    'https://cdn.jsdelivr.net/npm/botstrap@5.3.3/dist/js/bootstrap.bundle.min.js';
+    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js';
   script.crossOrigin = 'anonymous';
   script.async = true;
   document.body.appendChild(script);
@@ -37,6 +37,10 @@ function remoteUrl(page) {
   return `${REMOTE_BASE}/${page}.html`;
 }
 
+// Dynamic asset loader causes issues with local testing (Metro bundler).
+// Comment out the actual getNativeSource function for now.
+// Todo: Review as a team and decide on best approach. [Tomomi]
+/*
 async function getNativeSource(page) {
 
   const asset = Asset.Asset.fromModule(
@@ -45,6 +49,23 @@ async function getNativeSource(page) {
   await asset.downloadAsync();
   return { uri: asset.localUri };
 }
+*/
+
+// Static mapping for local HTML assets
+// Todo: Move this to the top under imports.
+const localAssets = {
+  index: require('./assets/index.html'),
+  trending: require('./assets/trending.html'),
+};
+
+// Replacing the above dynamic loader with static mapping
+async function getNativeSource(page) {
+  const assetModule = localAssets[page];
+  if (!assetModule) throw new Error('Page not found');
+  const asset = Asset.Asset.fromModule(assetModule);
+  await asset.downloadAsync();
+  return { uri: asset.localUri };
+}  
 
 export default function App() {
   const [page, setPage] = useState('index');
@@ -81,7 +102,7 @@ This commented-out section is for a tab selector.
 If you want to switch pages, delete this text and the comment syntax to
 open it up, as it's for dev purposes only.
 Once the pages are linked in the navbar, delete this block of cade.
-
+      */}
     <View style={styles.tabBar}>
         <TouchableOpacity
           style={[styles.tab, page === 'index' && styles.activeTab]}
@@ -98,7 +119,7 @@ Once the pages are linked in the navbar, delete this block of cade.
         </TouchableOpacity>
       </View> 
       
-      */}
+
 
       {loading ? (
         <View style={styles.loading}>
@@ -119,6 +140,7 @@ Once the pages are linked in the navbar, delete this block of cade.
           javaScriptEnabled={true}
           originWhitelist={['*']}
           allowFileAccess={true}
+          domStorageEnabled={true}
         />
       )}
       <StatusBar style="auto" />
