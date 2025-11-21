@@ -151,7 +151,6 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator 
         initialRouteName="Home"
-        drawerPosition="right"
         screenOptions={{
           headerTitle: () => <LogoTitle />,
           headerTintColor: '#3a3838ff',
