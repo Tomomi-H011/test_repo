@@ -9,6 +9,13 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
 import * as Asset from 'expo-asset';
+import styles from './styles';
+
+// Import and const Drawer for react native navigation scenario
+// Todo: Review different navigation implementation choices
+import {NavigationContainer} from '@react-navigation/native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+const Drawer = createDrawerNavigator();
 
 let bootstrapLinks = null;
 if (Platform.OS === 'web') {
@@ -37,10 +44,6 @@ function remoteUrl(page) {
   return `${REMOTE_BASE}/${page}.html`;
 }
 
-// Dynamic asset loader causes issues with local testing (Metro bundler).
-// Comment out the actual getNativeSource function for now.
-// Todo: Review as a team and decide on best approach. [Tomomi]
-/*
 async function getNativeSource(page) {
 
   const asset = Asset.Asset.fromModule(
@@ -49,28 +52,15 @@ async function getNativeSource(page) {
   await asset.downloadAsync();
   return { uri: asset.localUri };
 }
-*/
 
-// Static mapping for local HTML assets
-// Todo: Move this to the top under imports.
-const localAssets = {
-  index: require('./assets/index.html'),
-  trending: require('./assets/trending.html'),
-};
 
-// Replacing the above dynamic loader with static mapping
-async function getNativeSource(page) {
-  const assetModule = localAssets[page];
-  if (!assetModule) throw new Error('Page not found');
-  const asset = Asset.Asset.fromModule(assetModule);
-  await asset.downloadAsync();
-  return { uri: asset.localUri };
-}  
-
-export default function App() {
-  const [page, setPage] = useState('index');
+// Generate screen component
+// Previously inside App function
+function PageScreen({route}) {
+  const { page } = route.params;
   const [source, setSource] = useState(null);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     async function resolve() {
@@ -102,7 +92,9 @@ This commented-out section is for a tab selector.
 If you want to switch pages, delete this text and the comment syntax to
 open it up, as it's for dev purposes only.
 Once the pages are linked in the navbar, delete this block of cade.
-      */}
+
+      
+
     <View style={styles.tabBar}>
         <TouchableOpacity
           style={[styles.tab, page === 'index' && styles.activeTab]}
@@ -118,7 +110,7 @@ Once the pages are linked in the navbar, delete this block of cade.
           <Text style={styles.tabText}>Trending</Text>
         </TouchableOpacity>
       </View> 
-      
+  */}    
 
 
       {loading ? (
@@ -148,38 +140,21 @@ Once the pages are linked in the navbar, delete this block of cade.
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: '#0d6efd',
-    paddingVertical: 8,
-  },
-  tab: {
-   flex: 1,
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  activeTab: {
-    borderBottomWidth: 3,
-    borderBottomColor: '#fff',
-  },
-  tabText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  webview: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    borderWidth: 0,
-  },
-  loading: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen
+          name="Home"
+          component={PageScreen}
+          initialParams={{ page: 'index' }}
+        />
+        <Drawer.Screen
+          name="Trending"
+          component={PageScreen}
+          initialParams={{ page: 'trending' }}
+        />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
