@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  LogoTitleContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+    marginBottom: 10,
+ },
+
 });
 
 export default styles;
