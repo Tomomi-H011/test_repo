@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
@@ -17,6 +18,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 // Todo: Review different navigation implementation choices
 import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import LogoTitle from './assets/LogoTitle';
+
+
 const Drawer = createDrawerNavigator();
 
 let bootstrapLinks = null;
@@ -149,8 +153,10 @@ export default function App() {
         initialRouteName="Home"
         drawerPosition="right"
         screenOptions={{
-          drawerIcon: ({ color, size}) => (
-            <MaterialIcons name='menu' color='gray' size={30} />
+          headerTitle: () => <LogoTitle />,
+          headerTintColor: '#3a3838ff',
+          drawerIcon: () => (
+            <MaterialIcons name='menu' color='#3a3838ff' size={30} />
           )
         }}
       >
